@@ -1,6 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager)
+from django.db.models.signals import pre_save, post_save
+from core.helpers import random_string_generator, unique_key_generator
+from datetime import timedelta
+from django.conf import settings
+from django.urls import reverse
+from django.db.models import Q
+from django.template.loader import get_template
+from django.core.mail import send_mail
+from django.utils import timezone
+
 # Create your models here.
+DEFAULT_ACTIVATION_DAYS = getattr(settings, 'DEFAULT_ACTIVATION_DAYS', 7)
 
 class UserManager(BaseUserManager):
 	def create_user(self, email, username=None, password=None, is_active=True,is_staff=False, is_admin=False):
@@ -112,7 +123,7 @@ class EmailActivationManager(models.Manager):
 
 
 class EmailActivation(models.Model):
-    user            = models.ForeignKey(User)
+    user            = models.ForeignKey(User, on_delete=models.CASCADE)
     email           = models.EmailField()
     key             = models.CharField(max_length=120, blank=True, null=True)
     activated       = models.BooleanField(default=False)
@@ -155,7 +166,7 @@ class EmailActivation(models.Model):
         if not self.activated and not self.forced_expired:
             if self.key:
                 base_url = getattr(settings, 'BASE_URL', 'https://www.pythonecommerce.com')
-                key_path = reverse("account:email-activate", kwargs={'key': self.key}) # use reverse
+                key_path = reverse("accounts:email-activate", kwargs={'key': self.key}) # use reverse
                 path = "{base}{path}".format(base=base_url, path=key_path)
                 context = {
                     'path': path,
