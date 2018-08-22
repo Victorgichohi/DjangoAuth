@@ -8,7 +8,8 @@ from .forms import LoginForm, RegisterForm, ReactivateEmailForm, UserDetailChang
 from .models import EmailActivation
 from django.contrib import messages
 from django.utils.safestring import mark_safe
-
+from django_otp.decorators import otp_required
+from two_factor.views.mixins import OTPRequiredMixin
 # Create your views here.
 class AccountHomeView(LoginRequiredMixin, DetailView):
     template_name = 'accounts/home.html'
@@ -65,7 +66,8 @@ class AccountEmailActivateView(FormMixin, View):
 
 
 ''' manage login '''
-class LoginView(NextUrlMixin, RequestFormAttachMixin, FormView):
+
+class LoginView(NextUrlMixin, RequestFormAttachMixin, FormView, OTPRequiredMixin):
     form_class = LoginForm
     success_url = '/'
     template_name = 'login.html'

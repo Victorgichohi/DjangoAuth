@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <p>Here is your QR code:</p>
+  <p>
+      <img src="/qr/{{user.email|e}}" />
+  </p>
+  <p>
+      Your secret key is: {{user.key|e}}
+  </p>
+  <p>
+      <a href="/login" class="btn btn-success btn-lg">Login</a>
+  </p>
+{% endblock %}
