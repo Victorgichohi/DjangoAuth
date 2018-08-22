@@ -68,12 +68,12 @@ class User(AbstractBaseUser):
 	def __str__(self):
 		return self.email
 
-	def get_username(self):
+	def get_full_name(self):
 		if self.username:
 			return self.username
 		return self.email
 
-	def get_email(self):
+	def get_short_name(self):
 		return self.email
 
 	def has_perm(self, perm, obj=None):
@@ -85,7 +85,10 @@ class User(AbstractBaseUser):
 
 	@property
 	def is_staff(self):
+		if self.is_admin:
+			return True
 		return self.staff
+
 
 	@property
 	def is_admin(self):

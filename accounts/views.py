@@ -1,11 +1,13 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, FormView, DetailView, View, UpdateView
 from core.helpers import NextUrlMixin , RequestFormAttachMixin
 from .forms import LoginForm, RegisterForm
 from django.views.generic.edit import FormMixin
 from .forms import LoginForm, RegisterForm, ReactivateEmailForm, UserDetailChangeForm
-
+from .models import EmailActivation
+from django.contrib import messages
+from django.utils.safestring import mark_safe
 
 # Create your views here.
 class AccountHomeView(LoginRequiredMixin, DetailView):
@@ -30,10 +32,8 @@ class AccountEmailActivateView(FormMixin, View):
             else:
                 activated_qs = qs.filter(activated=True)
                 if activated_qs.exists():
-                    reset_link = reverse("password_reset")
                     msg = """Your email has already been confirmed
-                    Do you need to <a href="{link}">reset your password</a>?
-                    """.format(link=reset_link)
+                    """
                     messages.success(request, mark_safe(msg))
                     return redirect("login") 
         context = {'form': self.get_form(),'key': key}

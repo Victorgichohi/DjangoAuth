@@ -9,8 +9,10 @@ from django.contrib import admin
 from .views import home_page
 from django.views.generic import TemplateView, RedirectView
 from accounts.views import LoginView, RegisterView
+from two_factor.urls import urlpatterns as tf_urls
 
 urlpatterns = [
+    url(r'', include(tf_urls)),
     url(r'^$', home_page, name='home'),
     url(r'^logout/$', LogoutView.as_view(), name='logout'),
     url(r'^accounts/$', RedirectView.as_view(url='/account')),
