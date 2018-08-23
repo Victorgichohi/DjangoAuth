@@ -8,6 +8,8 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, get_user_model
 
 User = get_user_model()
+import pyotp
+
 
 class ReactivateEmailForm(forms.Form):
     email = forms.EmailField()
@@ -98,6 +100,7 @@ class RegisterForm(forms.ModelForm):
         user = super(RegisterForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         user.is_active = False # send confirmation email via signals
+        user.OTPkey = pyotp.random_base32()
         # obj = EmailActivation.objects.create(user=user)
         # obj.send_activation_email()
         if commit:

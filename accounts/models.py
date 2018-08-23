@@ -19,8 +19,7 @@ class UserManager(BaseUserManager):
 			raise ValueError("Users must have an email address")
 		if not password:
 			raise ValueError("Users must have a password")
-		if not OTPkey:
-			OTPkey = pyotp.random_base32()
+
 
 		user_obj = self.model(
 			email = self.normalize_email(email),

@@ -78,18 +78,19 @@ class QRview(CreateView):
     def get(self, request):
         user = self.request.user
         email = user.get_short_name()
-        if email is None:
-            return ''
+        if user is None:
+            return redirect ("login")
         t = pyotp.TOTP(user.OTPkey)
         q = qrcode.make(t.provisioning_uri(email))
         img = BytesIO()
-        # q.save(img)
+        q.save(img)
         filename = '%s.png' % email
 
         q.save(settings.MEDIA_ROOT + filename)
         with open(settings.MEDIA_ROOT + filename, "rb") as f:
             data = f.read()
-        user.OTPQr.save('dude.png', ContentFile(data))
+        user.OTPQr.save(filename, ContentFile(data))
+        print(user.OTPkey)
         context = {'img': user.OTPQr , 'key':user.OTPkey}
         return render(request, 'scanpage.html', context)
 
