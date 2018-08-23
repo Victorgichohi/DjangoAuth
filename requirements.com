@@ -1,0 +1,12 @@
+Babel==2.6.0
+Django==2.1
+django-formtools==2.1
+django-otp==0.5.0
+django-phonenumber-field==1.3.0
+django-two-factor-auth==1.8.0
+phonenumberslite==8.9.11
+Pillow==5.2.0
+pyotp==2.2.6
+pytz==2018.5
+qrcode==6.0
+six==1.11.0
