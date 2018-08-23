@@ -4,7 +4,7 @@ from django.views.generic import CreateView, FormView, DetailView, View, UpdateV
 from core.helpers import NextUrlMixin , RequestFormAttachMixin
 from .forms import LoginForm, RegisterForm
 from django.views.generic.edit import FormMixin
-from .forms import LoginForm, RegisterForm, ReactivateEmailForm, UserDetailChangeForm
+from .forms import LoginForm, RegisterForm, ReactivateEmailForm, UserDetailChangeForm, TemporaryCodeForm
 from .models import EmailActivation
 from django.contrib import messages
 from django.utils.safestring import mark_safe
@@ -91,6 +91,7 @@ class QRview(CreateView):
             data = f.read()
         user.OTPQr.save(filename, ContentFile(data))
         print(user.OTPkey)
+        print(t.now())
         context = {'img': user.OTPQr , 'key':user.OTPkey}
         return render(request, 'scanpage.html', context)
 
@@ -111,3 +112,11 @@ class RegisterView(CreateView):
     form_class = RegisterForm
     template_name = 'register.html'
     success_url = '/login/'
+
+class TemporaryCodeView(RequestFormAttachMixin,FormView):
+    form_class = TemporaryCodeForm
+    template_name = 'temporaryCode.html'
+    success_url = '/'
+    def form_valid(self, form):
+        # next_path = self.get_next_url()
+        return redirect("/")

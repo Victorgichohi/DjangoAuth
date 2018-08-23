@@ -149,6 +149,31 @@ class LoginForm(forms.Form):
         self.user = user
         return data
 
+class TemporaryCodeForm(forms.Form):
+    code = forms.CharField(label ='TemporaryCode')
+    
+    def __init__(self, request, *args, **kwargs):
+        self.request = request
+        super(TemporaryCodeForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        request = self.request
+        data = self.cleaned_data
+        code = data.get("code")
+        user = request.user
+        p = 0
+        p = int(code)
+        t = pyotp.TOTP(user.OTPkey)
+        print (t.now())
+        if t.verify(p):
+            print("good")
+        else:
+            raise forms.ValidationError("invalid code")
+
+
+
+
+
 
 
 
