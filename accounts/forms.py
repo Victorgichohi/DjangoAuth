@@ -80,12 +80,29 @@ class UserAdminChangeForm(forms.ModelForm):
 class RegisterForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+    password1 = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
         model = User
         fields = ('username', 'email',) #'username',)
+
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm, self).__init__(*args, **kwargs)
+        for fname, f in self.fields.items():
+            f.label = ''
+        self.fields['username'].widget.attrs['class'] = 'form-control'
+        self.fields['username'].widget.attrs['placeholder'] = 'username'
+
+        self.fields['email'].widget.attrs['class'] = 'form-control'
+        self.fields['email'].widget.attrs['placeholder'] = 'email'
+
+        self.fields['password1'].widget.attrs['class'] = 'form-control'
+        self.fields['password1'].widget.attrs['placeholder'] = 'password'
+
+        self.fields['password2'].widget.attrs['class'] = 'form-control'
+        self.fields['password2'].widget.attrs['placeholder'] = 'confirm password'
+
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -109,12 +126,22 @@ class RegisterForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
-    email    = forms.EmailField(label='Email')
+    email    = forms.EmailField(label='Email',)
     password = forms.CharField(widget=forms.PasswordInput)
 
     def __init__(self, request, *args, **kwargs):
         self.request = request
         super(LoginForm, self).__init__(*args, **kwargs)
+
+        for fname, f in self.fields.items():
+            f.label = ''
+        self.fields['email'].widget.attrs['class'] = 'form-control'
+        self.fields['email'].widget.attrs['placeholder'] = 'email'
+        
+        self.fields['password'].widget.attrs['class'] = 'form-control'
+        self.fields['password'].widget.attrs['placeholder'] = 'password'
+
+
 
     def clean(self):
         request = self.request
@@ -155,6 +182,11 @@ class TemporaryCodeForm(forms.Form):
     def __init__(self, request, *args, **kwargs):
         self.request = request
         super(TemporaryCodeForm, self).__init__(*args, **kwargs)
+
+        for fname, f in self.fields.items():
+            f.label = ''
+        self.fields['code'].widget.attrs['class'] = 'form-control'
+        self.fields['code'].widget.attrs['placeholder'] = 'TemporaryCode'
 
     def clean(self):
         request = self.request

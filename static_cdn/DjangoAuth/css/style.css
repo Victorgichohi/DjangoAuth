@@ -1,0 +1,36 @@
+body{
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+.search-box{margin:80px auto;position:absolute;}
+.caption{margin-bottom:50px;}
+.loginForm input[type=text], .loginForm input[type=password]{
+	margin-bottom:10px;
+}
+.loginForm input[type=submit]{
+	background:#fb044a;
+	color:#fff;
+	font-weight:700;
+}
+.navbar{
+    border-radius: 0;
+}
+.navbar-inverse .navbar-nav>li>a {
+    color: #fff;
+}
+.navbar-inverse .navbar-brand {
+    color: #fff;
+}
+.navbar-inverse {
+    background-color: #1a7de2;
+    border-color: #1a7de2;
+    color: #fff;
+}
+.container-fluid{
+    padding: 0;
+}
+.row{
+	margin: 0;
+	padding: 0;
+}

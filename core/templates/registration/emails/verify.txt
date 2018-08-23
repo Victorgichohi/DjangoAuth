@@ -12,4 +12,3 @@ Once you activate, you can login!
 
 Thank you,
 
-Python eCommerce

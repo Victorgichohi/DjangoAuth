@@ -10,6 +10,6 @@ def home_page(request):
         "content":" Welcome to the homepage.",
 
     }
-    if request.user.is_authenticated:
-        context["premium_content"] = "YEAHHHHHH"
+    if not request.user.is_authenticated:
+    	return redirect("/login")
     return render(request, "home_page.html", context)

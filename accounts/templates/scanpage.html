@@ -2,14 +2,18 @@
 {% load static %}
 
 {% block content %}
-  <p>Here is your QR code:</p>
-  <p>
-      <img src="{{ img.url }}" />
-  </p>
-  <p>
-      Your secret key is: {{ key }}
-  </p>
-  <p>
-      <a href="/account/verify" class="btn btn-success btn-lg">Verify</a>
-  </p>
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4 text-center">
+      <div class="search-box">
+        <div class="caption">
+          <p>Here is your QR code:</p>
+        </div>
+          <img src="{{ img.url }}" />
+          <a href="/account/verify" class="btn btn-success btn-lg">Verify</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
