@@ -75,8 +75,14 @@ class AccountEmailActivateView(FormMixin, View):
 
 
 class QRview(CreateView):
+    form_class = TemporaryCodeForm
+    def form_valid(self, form):
+        # next_path = self.get_next_url()
+        return redirect("/")
     def get(self, request):
         user = self.request.user
+        if  user.has_scanned:
+            return redirect("/account/verify")
         email = user.get_short_name()
         if user is None:
             return redirect ("login")
@@ -92,6 +98,8 @@ class QRview(CreateView):
         user.OTPQr.save(filename, ContentFile(data))
         print(user.OTPkey)
         print(t.now())
+        user.has_scanned = True
+        # print(user.has_scanned)
         context = {'img': user.OTPQr , 'key':user.OTPkey}
         return render(request, 'scanpage.html', context)
 
@@ -100,14 +108,13 @@ class QRview(CreateView):
 
 class LoginView(NextUrlMixin, RequestFormAttachMixin, FormView):
     form_class = LoginForm
-    success_url = '/account/scan/'
+    # success_url = '/account/scan/'
     template_name = 'login.html'
-    default_next = '/account/scan/'
+    # default_next = '/account/scan/'
 
     def form_valid(self, form):
-        next_path = self.get_next_url()
-        return redirect(next_path)
-
+        request = self.request
+        return redirect("/account/scan")
 class RegisterView(CreateView):
     form_class = RegisterForm
     template_name = 'register.html'

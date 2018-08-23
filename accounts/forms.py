@@ -162,7 +162,10 @@ class TemporaryCodeForm(forms.Form):
         code = data.get("code")
         user = request.user
         p = 0
-        p = int(code)
+        try:
+            p = int(code)
+        except:
+            raise forms.ValidationError("please input correct code")
         t = pyotp.TOTP(user.OTPkey)
         print (t.now())
         if t.verify(p):

@@ -59,6 +59,7 @@ class User(AbstractBaseUser):
 	admin = models.BooleanField(default = False)
 	staff = models.BooleanField(default = False)
 	timestamp = models.DateTimeField(auto_now_add = True)
+	has_scanned = models.BooleanField(default = False)
 	OTPkey = models.CharField(max_length = 4000)
 	OTPQr = models.ImageField(upload_to='images/scans')
 	USERNAME_FIELD = 'email'
