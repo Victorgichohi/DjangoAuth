@@ -3,8 +3,6 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render,redirect
 # Create your views here.
 def home_page(request):
-    # print(request.session.get("first_name", "Unknown"))
-    # request.session['first_name']
     context = {
         "title":"Hello World!",
         "content":" Welcome to the homepage.",
@@ -12,4 +10,8 @@ def home_page(request):
     }
     if not request.user.is_authenticated:
     	return redirect("/login")
-    return render(request, "home_page.html", context)
+    if request.user.is_authenticated:
+    	if request.user.has_scanned == False:
+    		return redirect("account/scan")
+    	else:
+    		return render(request, "home_page.html", context)

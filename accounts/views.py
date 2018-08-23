@@ -5,7 +5,7 @@ from core.helpers import NextUrlMixin , RequestFormAttachMixin
 from .forms import LoginForm, RegisterForm
 from django.views.generic.edit import FormMixin
 from .forms import LoginForm, RegisterForm, ReactivateEmailForm, UserDetailChangeForm, TemporaryCodeForm
-from .models import EmailActivation
+from .models import EmailActivation, User
 from django.contrib import messages
 from django.utils.safestring import mark_safe
 
@@ -75,7 +75,7 @@ class AccountEmailActivateView(FormMixin, View):
 
 
 class QRview(CreateView):
-    form_class = TemporaryCodeForm
+
     def form_valid(self, form):
         # next_path = self.get_next_url()
         return redirect("/")
@@ -96,9 +96,9 @@ class QRview(CreateView):
         with open(settings.MEDIA_ROOT + filename, "rb") as f:
             data = f.read()
         user.OTPQr.save(filename, ContentFile(data))
-        print(user.OTPkey)
-        print(t.now())
+        user = User.objects.get(email = email)
         user.has_scanned = True
+        user.save()
         # print(user.has_scanned)
         context = {'img': user.OTPQr , 'key':user.OTPkey}
         return render(request, 'scanpage.html', context)
