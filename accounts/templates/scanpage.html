@@ -1,12 +1,13 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
   <p>Here is your QR code:</p>
   <p>
-      <img src="/qr/{{user.email|e}}" />
+      <img src="{{ img.url }}" />
   </p>
   <p>
-      Your secret key is: {{user.key|e}}
+      Your secret key is: {{ key }}
   </p>
   <p>
       <a href="/login" class="btn btn-success btn-lg">Login</a>

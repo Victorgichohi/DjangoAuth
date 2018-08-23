@@ -19,6 +19,9 @@ class UserManager(BaseUserManager):
 			raise ValueError("Users must have an email address")
 		if not password:
 			raise ValueError("Users must have a password")
+		if not OTPkey:
+			OTPkey = pyotp.random_base32()
+
 		user_obj = self.model(
 			email = self.normalize_email(email),
 			username=username
@@ -57,8 +60,8 @@ class User(AbstractBaseUser):
 	admin = models.BooleanField(default = False)
 	staff = models.BooleanField(default = False)
 	timestamp = models.DateTimeField(auto_now_add = True)
-
-
+	OTPkey = models.CharField(max_length = 4000)
+	OTPQr = models.ImageField(upload_to='images/scans')
 	USERNAME_FIELD = 'email'
 
 	REQUIRED_FIELDS = []

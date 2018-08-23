@@ -8,8 +8,18 @@ from .forms import LoginForm, RegisterForm, ReactivateEmailForm, UserDetailChang
 from .models import EmailActivation
 from django.contrib import messages
 from django.utils.safestring import mark_safe
-from django_otp.decorators import otp_required
-from two_factor.views.mixins import OTPRequiredMixin
+
+from django.core.files.base import ContentFile
+
+''' QR scan imports '''
+import qrcode
+import logging
+import pyotp
+import os
+from io import StringIO, BytesIO
+import settings
+from django.core.files import File  # you need this somewhere
+
 # Create your views here.
 class AccountHomeView(LoginRequiredMixin, DetailView):
     template_name = 'accounts/home.html'
@@ -64,14 +74,33 @@ class AccountEmailActivateView(FormMixin, View):
         return render(self.request, 'registration/activation-error.html', context)
 
 
+class QRview(CreateView):
+    def get(self, request):
+        user = self.request.user
+        email = user.get_short_name()
+        if email is None:
+            return ''
+        t = pyotp.TOTP(user.OTPkey)
+        q = qrcode.make(t.provisioning_uri(email))
+        img = BytesIO()
+        # q.save(img)
+        filename = '%s.png' % email
+
+        q.save(settings.MEDIA_ROOT + filename)
+        with open(settings.MEDIA_ROOT + filename, "rb") as f:
+            data = f.read()
+        user.OTPQr.save('dude.png', ContentFile(data))
+        context = {'img': user.OTPQr , 'key':user.OTPkey}
+        return render(request, 'scanpage.html', context)
+
 
 ''' manage login '''
 
-class LoginView(NextUrlMixin, RequestFormAttachMixin, FormView, OTPRequiredMixin):
+class LoginView(NextUrlMixin, RequestFormAttachMixin, FormView):
     form_class = LoginForm
-    success_url = '/'
+    success_url = '/account/scan/'
     template_name = 'login.html'
-    default_next = '/'
+    default_next = '/account/scan/'
 
     def form_valid(self, form):
         next_path = self.get_next_url()
