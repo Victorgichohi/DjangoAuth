@@ -11,6 +11,8 @@ from django.core.mail import send_mail
 from django.utils import timezone
 
 # Create your models here.
+
+#Set the default email activation days before expiring
 DEFAULT_ACTIVATION_DAYS = getattr(settings, 'DEFAULT_ACTIVATION_DAYS', 7)
 
 class UserManager(BaseUserManager):
@@ -52,6 +54,11 @@ class UserManager(BaseUserManager):
 			)
 		return user
 
+
+"""
+use AbstractBaseUser for authentication only and add custom fields.
+OTPkey holds the generated key by the user. 
+"""
 class User(AbstractBaseUser):
 	email = models.EmailField(max_length = 255,unique = True)
 	username = models.CharField(max_length = 255, blank = True, unique = True, null=True)
@@ -97,6 +104,9 @@ class User(AbstractBaseUser):
 	def is_admin(self):
 		return self.admin
 
+""" 
+Check if activation dates have passed for this email
+"""
 class EmailActivationQuerySet(models.query.QuerySet):
     def confirmable(self):
         now = timezone.now()
@@ -127,7 +137,9 @@ class EmailActivationManager(models.Manager):
                     activated=False
                 )
 
-
+"""
+Handles email activaion 
+"""
 class EmailActivation(models.Model):
     user            = models.ForeignKey(User, on_delete=models.CASCADE)
     email           = models.EmailField()
@@ -168,6 +180,7 @@ class EmailActivation(models.Model):
             return True
         return False
 
+    # send activation email 
     def send_activation(self):
         if not self.activated and not self.forced_expired:
             if self.key:

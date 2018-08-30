@@ -155,10 +155,12 @@ class LoginForm(forms.Form):
             if not_active.exists():
                 ## not active, check email activation
                 link = reverse("account:resend-activation")
+                # gives link for email confirmation
                 reconfirm_msg = """Go to <a href='{resend_link}'>
                 resend confirmation email</a>.
                 """.format(resend_link = link)
                 confirm_email = EmailActivation.objects.filter(email=email)
+                #Check if confirmation period has passed
                 is_confirmable = confirm_email.confirmable().exists()
                 if is_confirmable:
                     msg1 = "Please check your email to confirm your account or " + reconfirm_msg.lower()

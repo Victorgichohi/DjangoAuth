@@ -74,6 +74,10 @@ class AccountEmailActivateView(FormMixin, View):
         return render(self.request, 'registration/activation-error.html', context)
 
 
+"""
+Generates a QR for the user and renders it on the frontend
+
+"""
 class QRview(CreateView):
 
     def form_valid(self, form):

@@ -24,8 +24,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1','localhost','142.93.119.115']
 
-ADMINS = MANAGERS
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -130,11 +128,11 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     # os.path.join("static"),
-    '/home/vic/static/',
+    '/f/web/static',
 ]
 
 STATIC_ROOT = os.path.join("static")
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join("media")
 
-from production_settings import *
+from local_settings import *
